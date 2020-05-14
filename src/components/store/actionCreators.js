@@ -1,0 +1,1 @@
+export const setSelectedColor = (color) => ({type: 'SET_SELECTED_COLOR', payload: color});

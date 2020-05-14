@@ -5,14 +5,14 @@ import { Controls } from '../Controls';
 export function Editor() {
   const editorRef = createRef();
 
-  document.execCommand("defaultParagraphSeparator", false, "br");
-  document.execCommand('styleWithCSS', false, true)
+  document.execCommand('defaultParagraphSeparator', false, 'br');
+  document.execCommand('styleWithCSS', false, true);
 
 
-  const handleClick = () => {
+  const transformInputToJSON = () => {
     const editorData = editorRef.current.innerHTML;
     const source = [];
-    console.log(editorData);
+    console.log(`Source data: ${editorData}`);
     
     const firstNonStyleData = editorData.match(/^\w+/gm);
     const styleEntriesData = editorData.match(/<span (.*?)<\/span>/gm);
@@ -24,19 +24,19 @@ export function Editor() {
         fontSize: 'medium',
         color: 'black',
         backgroundColor: 'transparent',
-      })
+      });
     }
     if (firstNonStyleData) {
-      pushDefaultObject(firstNonStyleData[0])
+      pushDefaultObject(firstNonStyleData[0]);
     }
 
     if (styleEntriesData) {
       for (let i = 0; i < styleEntriesData.length; i++) {
         const currentData = styleEntriesData[i];
         const text = currentData.match(/>(.*?)<\//gm)[0].slice(1, -2);
-        const dataStyles = currentData.match(/"(.*?)"/gm)[0];
-        const stylesArray = dataStyles.match(/(?=\S*['-])?([a-zA-Z'-]+)/gm)
-        const obj = {
+        const stylesArray = currentData.match(/"(.*?)"/gm)[0]
+          .match(/(?=\S*['-])?([a-zA-Z'-]+)/gm);
+        const objToPush = {
           text: text,
           fontSize: 'medium',
           color: 'black',
@@ -44,17 +44,17 @@ export function Editor() {
         };
 
         for (let i = 0; i < stylesArray.length; i += 2) {
-          obj[stylesArray[i]] = stylesArray[i+1];
+          objToPush[stylesArray[i]] = stylesArray[i+1];
         }
-        source.push(obj)
+        source.push(objToPush);
       }
     }
 
     if (endNonStyleData && editorData.indexOf(firstNonStyleData) !== editorData.indexOf(endNonStyleData)) {
-      pushDefaultObject(endNonStyleData[0])
+      pushDefaultObject(endNonStyleData[0]);
     }
-    console.log(source)
-  }
+    console.log(`JSON data:${JSON.stringify(source)}`);
+  };
 
   return(
     <div className={style.editorWrapper}>
@@ -66,9 +66,9 @@ export function Editor() {
           designmode="true"
           suppressContentEditableWarning={true}
         >
-          Something
+          Some text to start
         </div>
-        <Controls submit={handleClick}/>
+        <Controls transformInputToJSON={transformInputToJSON}/>
       </div>
     </div>
   );
