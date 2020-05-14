@@ -1,0 +1,12 @@
+.controlsWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.button {
+  max-width: 200px;
+}
+
+.select {
+  max-width: 200px;
+}
