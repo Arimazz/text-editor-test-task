@@ -96,7 +96,7 @@ function ControlsTemplate(props) {
         type="button"
         onClick={transformInputToJSON}
       >
-        Submit
+        Log JSON
       </button>
       <div>
         Font Size:
